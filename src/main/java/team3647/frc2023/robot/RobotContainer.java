@@ -18,5 +18,6 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 drivetrainCommands.drive(
                         mainController::getLeftStickY, mainController::getRightStickX));
+        mainController.buttonX.whileTrue(drivetrainCommands.openLoop());
     }
-}
+}                                       

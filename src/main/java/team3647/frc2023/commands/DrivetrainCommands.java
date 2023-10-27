@@ -22,4 +22,12 @@ public class DrivetrainCommands {
                 },
                 drivetrain);
     }
+
+    public Command openLoop() {
+        return Commands.run(
+                () -> {
+                    drivetrain.setOpenloop(0.5, 0);
+                },
+                drivetrain);
+    }
 }

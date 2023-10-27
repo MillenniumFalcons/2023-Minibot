@@ -1,24 +1,25 @@
 package team3647.frc2023.subsystems;
 
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import team3647.lib.PeriodicSubsystem;
 
 public class Drivetrain implements PeriodicSubsystem {
-    private final TalonFX left;
-    private final TalonFX right;
-
-    private final DutyCycleOut leftDutycycle = new DutyCycleOut(0);
-    private final DutyCycleOut rightDutycycle = new DutyCycleOut(0);
+    private final CANSparkMax right;
+    private final CANSparkMax left;
+    private final SparkMaxPIDController rightController;
+    private final SparkMaxPIDController leftController;
 
     private final PeriodicIO periodicIO = new PeriodicIO();
 
-    public Drivetrain(TalonFX left, TalonFX right) {
+    public Drivetrain(CANSparkMax left, CANSparkMax right) {
         this.left = left;
         this.right = right;
+        this.leftController = left.getPIDController();
+        this.rightController = right.getPIDController();
     }
 
     public void drive(double forward, double rotation) {
@@ -27,31 +28,23 @@ public class Drivetrain implements PeriodicSubsystem {
     }
 
     public void setOpenloop(double leftOutput, double rightOutput) {
-        periodicIO.leftOutput = leftDutycycle;
-        leftDutycycle.Output = leftOutput;
-        periodicIO.rightOutput = rightDutycycle;
-        rightDutycycle.Output = rightOutput;
+        periodicIO.leftOutput = leftOutput;
+
+        periodicIO.rightOutput = leftOutput;
     }
 
     @Override
-    public void init() {}
-
-    @Override
     public void writePeriodicOutputs() {
-        this.left.setControl(periodicIO.leftOutput);
-        this.right.setControl(periodicIO.rightOutput);
+        // this.leftController.setReference(periodicIO.leftOutput, ControlType.kDutyCycle);
+        // this.rightController.setReference(periodicIO.rightOutput, ControlType.kDutyCycle);
+        this.left.set(periodicIO.leftOutput);
+        this.right.set(periodicIO.rightOutput);
     }
 
     public static class PeriodicIO {
         public double feedforward = 1;
-        public ControlRequest leftOutput;
-        public ControlRequest rightOutput;
-    }
-
-    @Override
-    public void periodic() {
-        readPeriodicInputs();
-        writePeriodicOutputs();
+        public double leftOutput;
+        public double rightOutput;
     }
 
     @Override
