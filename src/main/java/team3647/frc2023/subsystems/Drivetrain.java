@@ -2,6 +2,8 @@ package team3647.frc2023.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import team3647.lib.PeriodicSubsystem;
@@ -17,12 +19,15 @@ public class Drivetrain implements PeriodicSubsystem {
     private final CANSparkMax right;
     private final CANSparkMax left;
 
+
+
     //periodicIO consolidates the measured input and output values
     private final PeriodicIO periodicIO = new PeriodicIO();
 
     public Drivetrain(CANSparkMax left, CANSparkMax right) {
         this.left = left;
         this.right = right;
+        
 
     }
 
@@ -51,6 +56,7 @@ public class Drivetrain implements PeriodicSubsystem {
      */
     public void writePeriodicOutputs() {
 
+        
         this.left.set(periodicIO.leftOutput);
         this.right.set(periodicIO.rightOutput);
     }
